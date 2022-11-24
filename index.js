@@ -62,12 +62,7 @@ async function run(){
 
      
 
-//here
-     app.post('/products/:id' , async(req,res)=>{
-      const order=req.body;
-      const result=await productCollection.insertOne(order)
-      res.send(result)
-     })
+
      app.post('/products' , async(req,res)=>{
       const order=req.body;
       const result=await productCollection.insertOne(order)
