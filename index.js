@@ -8,7 +8,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 require('dotenv').config();
 
-//middle wares
+
 app.use(cors());
 app.use(express.json())
 
@@ -26,6 +26,7 @@ async function run(){
   try{
      const productCollection= client.db('reseller').collection('products');
      const categoriesCollection= client.db('reseller').collection('categories');
+     const bookedProductsCollection= client.db('reseller').collection('bookedproducts');
     
       
     
@@ -35,6 +36,7 @@ async function run(){
       const products=await cursor.toArray();
       res.send(products)
      })
+     
      app.get('/products/All',async(req,res)=>{
       const query={}
       const cursor=productCollection.find(query)
@@ -47,6 +49,17 @@ async function run(){
       const products=await cursor.toArray();
       res.send(products)
      })
+     app.get('/bookedProducts',async(req,res)=>{
+      const query={}
+      const cursor=bookedProductsCollection.find(query)
+      const products=await cursor.toArray();
+      res.send(products)
+     })
+     app.post('/bookedProducts',async(req,res)=>{
+      const bookings=req.body;
+      const bookedprod= await bookedProductsCollection.insertOne(bookings)
+      res.send(bookedprod)
+   })
     
    
     
@@ -59,6 +72,9 @@ async function run(){
       const products=await cursor.toArray();
       res.send(products)
      })
+
+     app.
+    
 
      
 
