@@ -27,6 +27,7 @@ async function run(){
      const productCollection= client.db('reseller').collection('products');
      const categoriesCollection= client.db('reseller').collection('categories');
      const bookedProductsCollection= client.db('reseller').collection('bookedproducts');
+     const usersCollection= client.db('reseller').collection('users');
     
       
     
@@ -60,6 +61,14 @@ async function run(){
       const bookedprod= await bookedProductsCollection.insertOne(bookings)
       res.send(bookedprod)
    })
+   app.get('/bookedProducts/:customerEmail',async(req,res)=>{
+    // const email=req.params.customerEmail;
+    // console.log(email)
+    const query={customerEmail: req.params.customerEmail}
+    const cursor= bookedProductsCollection.find(query)
+    const products=await cursor.toArray();
+    res.send(products)
+   })
     
    
     
@@ -73,7 +82,17 @@ async function run(){
       res.send(products)
      })
 
-     app.
+     app.post('/users',async(req,res)=>{
+      const user=req.body;
+      const result= await usersCollection.insertOne(user)
+      res.send(result)
+   })
+   app.get('/users',async(req,res)=>{
+    const query={}
+    const cursor=usersCollection.find(query)
+    const users=await cursor.toArray();
+    res.send(users)
+   })
     
 
      
