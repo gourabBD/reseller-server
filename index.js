@@ -28,6 +28,7 @@ async function run(){
      const categoriesCollection= client.db('reseller').collection('categories');
      const bookedProductsCollection= client.db('reseller').collection('bookedproducts');
      const usersCollection= client.db('reseller').collection('users');
+     const advertiseCollection= client.db('reseller').collection('advertise');
     
       
     
@@ -37,6 +38,24 @@ async function run(){
       const products=await cursor.toArray();
       res.send(products)
      })
+     app.post('/products' , async(req,res)=>{
+      const order=req.body;
+      const result=await productCollection.insertOne(order)
+      res.send(result)
+     })
+     app.post('/advertise' , async(req,res)=>{
+      const order=req.body;
+      const result=await advertiseCollection.insertOne(order)
+      res.send(result)
+     })
+     app.get('/advertise',async(req,res)=>{
+      const query={}
+      const cursor=advertiseCollection.find(query)
+      const products=await cursor.toArray();
+      res.send(products)
+     })
+     
+     
      
      app.get('/products/All',async(req,res)=>{
       const query={}
@@ -69,6 +88,14 @@ async function run(){
     const products=await cursor.toArray();
     res.send(products)
    })
+   app.get('/products/sellerproduct/:email',async(req,res)=>{
+    // const email=req.params.customerEmail;
+    // console.log(email)
+    const query={email: req.params.email}
+    const cursor= productCollection.find(query)
+    const products=await cursor.toArray();
+    res.send(products)
+   })
     
    
     
@@ -98,36 +125,11 @@ async function run(){
      
 
 
-     app.post('/products' , async(req,res)=>{
-      const order=req.body;
-      const result=await productCollection.insertOne(order)
-      res.send(result)
-     })
+   
     
-     //Update
-    //  app.get(`/products/:id`,async(req,res)=>{
-    //   const id=req.params.id;
-    //   const query={_id: ObjectId(id)}
-    //   const service = await reviewCollection.findOne(query);
-    //   res.send(service)
-    //  })
+    
 
-    //  app.patch('/review/:id',async(req,res)=>{
-    //   const id= req.params.id;
-    //   const userReview = req.body.userReview
-    //   const query={_id : ObjectId(id)}
-    //   const updateDoc={
-    //     $set:{
-    //       userReview: userReview
-
-    //     }
-      
-    //   }
-    //   const result =await reviewCollection.updateOne(query,updateDoc)
-    //   res.send(result)
-    //  })
-
-    //delete review
+    //delete product
      app.delete('/products/:id',async(req,res)=>{
       const id=req.params.id;
       const query={_id: ObjectId(id)}
