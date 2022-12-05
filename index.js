@@ -25,13 +25,37 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
   try{
      const productCollection= client.db('reseller').collection('products');
+     const wishlistCollection= client.db('reseller').collection('wishlist');
      const categoriesCollection= client.db('reseller').collection('categories');
      const bookedProductsCollection= client.db('reseller').collection('bookedproducts');
      const usersCollection= client.db('reseller').collection('users');
      const advertiseCollection= client.db('reseller').collection('advertise');
-    
-      
-    
+
+     app.get('/users',async(req,res)=>{
+      const query={}
+      const cursor=usersCollection.find(query)
+      const users=await cursor.toArray();
+      res.send(users)
+     })
+
+    //user adding
+     app.post('/users',async(req,res)=>{
+      const user=req.body;
+      const result= await usersCollection.insertOne(user)
+      res.send(result)
+   })
+   
+  
+  
+   app.get(`/users/:id`,async(req,res)=>{
+    const id=req.params.id;
+   const query={_id:ObjectId(id)}
+    const result = await usersCollection.findOne(query);
+    res.send(result)
+   })
+ 
+     
+
      app.get('/products',async(req,res)=>{
       const query={}
       const cursor=productCollection.find(query)
@@ -97,7 +121,28 @@ async function run(){
     res.send(products)
    })
     
+   //wishlist
+   app.post('/wishlist' , async(req,res)=>{
+    const order=req.body;
+    const result=await wishlistCollection.insertOne(order)
+    res.send(result)
+   })
+   //wishlist get
+   app.get('/wishlist/:email',async(req,res)=>{
    
+    const query={email: req.params.email
+      }
+    const cursor= wishlistCollection.find(query)
+    const products=await cursor.toArray();
+    res.send(products)
+   })
+   app.get('/wishlist',async(req,res)=>{
+   
+    const query={}
+    const cursor= wishlistCollection.find(query)
+    const products=await cursor.toArray();
+    res.send(products)
+   })
     
     
      app.get(`/products/:category`,async(req,res)=>{
@@ -108,34 +153,29 @@ async function run(){
       const products=await cursor.toArray();
       res.send(products)
      })
-
-     app.post('/users',async(req,res)=>{
-      const user=req.body;
-      const result= await usersCollection.insertOne(user)
-      res.send(result)
-   })
-   app.get('/users',async(req,res)=>{
-    const query={}
-    const cursor=usersCollection.find(query)
-    const users=await cursor.toArray();
-    res.send(users)
-   })
     
-
-     
-
+   
 
    
+    //buyer delete
+
+app.delete('/users/:id',async(req,res)=>{
+  const id=req.params.id;
+  
+  const query={_id: ObjectId(id)}
+  const result=await usersCollection.deleteOne(query)
+  res.send(result)
+ })
     
     
 
     //delete product
-     app.delete('/products/:id',async(req,res)=>{
-      const id=req.params.id;
-      const query={_id: ObjectId(id)}
-      const result=await productCollection.deleteOne(query)
-      res.send(result)
-     })
+    //  app.delete('/products/:id',async(req,res)=>{
+    //   const id=req.params.id;
+    //   const query={_id: ObjectId(id)}
+    //   const result=await productCollection.deleteOne(query)
+    //   res.send(result)
+    //  })
   }
   finally{
 
