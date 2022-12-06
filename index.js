@@ -47,13 +47,7 @@ async function run(){
    
   
   
-   app.get(`/users/:id`,async(req,res)=>{
-    const id=req.params.id;
-   const query={_id:ObjectId(id)}
-    const result = await usersCollection.findOne(query);
-    res.send(result)
-   })
- 
+  
      
 
      app.get('/products',async(req,res)=>{
@@ -120,6 +114,25 @@ async function run(){
     const products=await cursor.toArray();
     res.send(products)
    })
+
+    //Verified part
+  
+    
+    
+    app.patch('/products/sellerproduct/:email',async(req,res)=>{
+      const email= req.params.email;
+      const verifiedSeller = req.body.verifiedSeller
+      const query={email:email}
+      const updateDoc={
+        $set:{
+          verifiedSeller: verifiedSeller
+    
+        }
+      
+      }
+      const result =await productCollection.updateOne(query,updateDoc)
+      res.send(result)
+     })
     
    //wishlist
    app.post('/wishlist' , async(req,res)=>{
@@ -166,16 +179,34 @@ app.delete('/users/:id',async(req,res)=>{
   const result=await usersCollection.deleteOne(query)
   res.send(result)
  })
-    
-    
+ //make Admin from Buyer
+ app.get(`/users/:id`,async(req,res)=>{
+  const id=req.params.id;
+ const query={_id:ObjectId(id)}
+  const result = await usersCollection.findOne(query);
+  res.send(result)
+ })
 
-    //delete product
-    //  app.delete('/products/:id',async(req,res)=>{
-    //   const id=req.params.id;
-    //   const query={_id: ObjectId(id)}
-    //   const result=await productCollection.deleteOne(query)
-    //   res.send(result)
-    //  })
+
+ app.patch('/users/:id',async(req,res)=>{
+  const id= req.params.id;
+  const category = req.body.category
+  const query={_id : ObjectId(id)}
+  const updateDoc={
+    $set:{
+      category: category
+
+    }
+  
+  }
+  const result =await usersCollection.updateOne(query,updateDoc)
+  res.send(result)
+ })
+    
+   
+
+
+    
   }
   finally{
 
