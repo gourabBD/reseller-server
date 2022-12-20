@@ -11,7 +11,9 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(express.json())
-
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*")
+}) 
 
 
 
@@ -179,6 +181,36 @@ app.delete('/users/:id',async(req,res)=>{
   const result=await usersCollection.deleteOne(query)
   res.send(result)
  })
+ //deleting seller product
+ app.get(`/products/:id`,async(req,res)=>{
+  const id=req.params.id;
+ const query={_id:ObjectId(id)}
+  const result = await productCollection.findOne(query);
+  res.send(result)
+ })
+app.delete('/products/:id',async(req,res)=>{
+  const id=req.params.id;
+  
+  const query={_id: ObjectId(id)}
+  const result=await productCollection.deleteOne(query)
+  res.send(result)
+ })
+ //advertise delete
+ 
+//  app.get(`/advertise/:pId`,async(req,res)=>{
+//   const pId=req.params.pId;
+//  const query={pId:pId}
+//   const result = await advertiseCollection.findOne(query);
+//   res.send(result)
+//  })
+// app.delete(`/advertise/:pId`,async(req,res)=>{
+//   const pId=req.params.pId;
+//   console.log(pId)
+//   const query={pId:pId}
+//   const result=await advertiseCollection.deleteOne(query)
+//   res.send(result)
+//  })
+ 
  //make Admin from Buyer
  app.get(`/users/:id`,async(req,res)=>{
   const id=req.params.id;
